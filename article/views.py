@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from article.models import Article, Category
 
@@ -29,18 +30,30 @@ from article.models import Article, Category
 
 
 def article_list_view(request):
+
     search_query = request.GET.get('q', '')
 
     all_articles = Article.objects.filter(is_published=True)
+
 
     if search_query:
         all_articles = all_articles.filter(title__icontains=search_query)
 
     all_articles = all_articles.order_by('-pub_date')
 
+    paginator = Paginator(all_articles, 5)
+    page_number = request.GET.get('page')
+
+    articles_page = paginator.get_page(page_number)
+
+
     context = {
-        'articles': all_articles,
+        'articles': articles_page,
         'search_query': search_query,
+        'paginator': paginator,
+        'page_obj': articles_page
+
+
     }
 
     return render(request, 'articles/article_list.html', context)
@@ -58,7 +71,6 @@ def category_list_view(request):
 
 
 def category_detail_view(request, category_id):
-    """Widok szczegółowy kategorii z listą powiązanych artykułów."""
     category = Category.objects.get(id=category_id)
 
     context = {
