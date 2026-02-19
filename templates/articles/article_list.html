@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Artykułów</title>
+    <link rel="stylesheet" href="{% static 'article/css/style.css' %}">
+    <style>
+        .article-item {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .article-item h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .new-badge {
+            background-color: #ff4444;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .category-tag {
+            background-color: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        .search-form {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .search-form input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-form input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .search-form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .search-info {
+            background-color: #e7f3ff;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+            border-radius: 3px;
+        }
+
+        .clear-search {
+            color: #007bff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .clear-search:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wszystkie artykuły</h1>
+
+    <!-- Formularz wyszukiwania -->
+    <div class="search-form">
+        <form method="GET" action="">
+            <label for="search-input" style="display: none;">Wyszukaj artykuły:</label>
+            <input
+                type="text"
+                id="search-input"
+                name="q"
+                placeholder="Szukaj artykułów po tytule..."
+                value="{{ search_query }}"
+            >
+            <button type="submit">🔍 Szukaj</button>
+        </form>
+    </div>
+
+    <!-- Informacja o wyszukiwaniu -->
+    {% if search_query %}
+        <div class="search-info">
+            Wyniki wyszukiwania dla: <strong>"{{ search_query }}"</strong>
+            (znaleziono: {{ articles.count }} artykułów)
+            <a href="{% url 'article-list' %}" class="clear-search">✖ Wyczyść wyszukiwanie</a>
+        </div>
+    {% endif %}
+
+    {% if articles %}
+        <div class="articles-container">
+            {% for article in articles %}
+                <div class="article-item">
+                    <h2>
+                        {{ article.title }}
+                        {% if article.is_new %}
+                            <span class="new-badge">NOWOŚĆ!</span>
+                        {% endif %}
+                        {% if article.category %}
+                            <span class="category-tag">{{ article.category.name }}</span>
+                        {% endif %}
+                    </h2>
+                    <p>{{ article.content|truncatewords:50 }}</p>
+                    <div class="article-meta">
+                        Opublikowano: {{ article.pub_date|date:"d.m.Y H:i" }}
+                        ({{ article.pub_date|timesince }} temu)
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        {% if search_query %}
+            <div class="search-info">
+                Nie znaleziono artykułów dla frazy: <strong>"{{ search_query }}"</strong>
+                <a href="{% url 'article-list' %}" class="clear-search">✖ Pokaż wszystkie artykuły</a>
+            </div>
+        {% else %}
+            <p>Brak artykułów do wyświetlenia.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
+

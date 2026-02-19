@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category.name }} - Szczegóły kategorii</title>
+    <link rel="stylesheet" href="{% static 'article/css/style.css' %}">
+    <style>
+        .category-header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+
+        .articles-list {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .article-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+        }
+
+        .article-item h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .article-item p {
+            margin: 0;
+            color: #666;
+        }
+
+        .article-date {
+            font-size: 0.9em;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .no-articles {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid #007bff;
+        }
+
+        .back-link:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'category-list' %}" class="back-link">← Powrót do listy kategorii</a>
+
+    <div class="category-header">
+        <h1>{{ category.name }}</h1>
+        <p>Artykuły w tej kategorii: {{ category.article_set.count }}</p>
+    </div>
+
+    <div class="articles-list">
+        <h2>Lista artykułów:</h2>
+
+        {% if category.article_set.all %}
+            {% for article in category.article_set.all %}
+                <div class="article-item">
+                    <h3>{{ article.title }}</h3>
+                    <p>{{ article.content|truncatewords:30 }}</p>
+                    <div class="article-date">
+                        Opublikowano: {{ article.pub_date|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-articles">
+                <p>Brak artykułów w tej kategorii.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+

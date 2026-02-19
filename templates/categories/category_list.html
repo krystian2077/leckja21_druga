@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Kategorii</title>
+    <link rel="stylesheet" href="{% static 'article/css/style.css' %}">
+    <style>
+        li a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista Kategorii</h1>
+
+    {% if categories %}
+        <ul>
+        {% for category in categories %}
+            <li>
+                <a href="{% url 'category-detail' category.id %}">{{ category.name }}</a>
+                ({{ category.article_set.count }} artykułów)
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="no-categories">Brak kategorii w bazie danych.</p>
+    {% endif %}
+</body>
+</html>
+
