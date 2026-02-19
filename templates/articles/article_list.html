@@ -119,6 +119,33 @@
         </form>
     </div>
 
+    <div>
+        Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+        ({{ page_obj.paginator.count }} artykułów)
+    </div>
+
+    {% if page_obj.has_previous %}
+        <a href="?q={{ search_query }}&page={{ page_obj.previous_page_number }}">« Poprzednia</a>
+        {% else %}
+        <span class="disabled">« Poprzednia</span>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}">Następna »</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page.range  %}
+        {% if page_obj.number == num %}
+            <strong>{{ num }}</strong>
+        {% else %}
+            <a href="?q={{ search_query }}&page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}">Następna »</a>
+    {% endif %}
+
     <!-- Informacja o wyszukiwaniu -->
     {% if search_query %}
         <div class="search-info">
