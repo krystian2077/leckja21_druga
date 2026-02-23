@@ -75,14 +75,14 @@
 
     <div class="category-header">
         <h1>{{ category.name }}</h1>
-        <p>Artykuły w tej kategorii: {{ category.article_set.count }}</p>
+        <p>Artykuły w tej kategorii: {{ articles.count }}</p>
     </div>
 
     <div class="articles-list">
         <h2>Lista artykułów:</h2>
 
-        {% if category.article_set.all %}
-            {% for article in category.article_set.all %}
+        {% if articles %}
+            {% for article in articles %}
                 <div class="article-item">
                     <h3>{{ article.title }}</h3>
                     <p>{{ article.content|truncatewords:30 }}</p>

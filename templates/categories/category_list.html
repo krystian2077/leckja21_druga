@@ -16,10 +16,45 @@
         li a:hover {
             text-decoration: underline;
         }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #218838;
+        }
+
+        .back-btn::before {
+            content: "← ";
+            font-size: 1.2em;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-container h1 {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-    <h1>Lista Kategorii</h1>
+    <div class="header-container">
+        <h1>Lista Kategorii</h1>
+        <a href="{% url 'article-list' %}" class="back-btn">Powrót do strony głównej</a>
+    </div>
 
     {% if categories %}
         <ul>

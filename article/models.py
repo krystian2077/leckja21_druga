@@ -9,17 +9,31 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
 
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    pub_date = models.DateTimeField(auto_now_add=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    pub_date = models.DateTimeField(default=timezone.now)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True,
+                                 blank=True)
+    tags = models.ManyToManyField(Tag, blank=True, related_name='articles')
     is_published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
 
     def is_new(self):
-        """Sprawdza czy artykuł został opublikowany w ciągu ostatnich 3 dni."""
         return timezone.now() - self.pub_date <= timedelta(days=3)

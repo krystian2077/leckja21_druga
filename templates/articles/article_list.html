@@ -46,6 +46,72 @@
             margin-left: 10px;
         }
 
+        .tags-container {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tag {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            border: 1px solid #ddd;
+            display: inline-block;
+        }
+
+        .tag:hover {
+            background-color: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .sort-filter {
+            background-color: white;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-filter label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .sort-filter select {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .sort-filter select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .sort-filter button {
+            padding: 8px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .sort-filter button:hover {
+            background-color: #218838;
+        }
+
         .search-form {
             background-color: white;
             padding: 20px;
@@ -99,10 +165,116 @@
         .clear-search:hover {
             text-decoration: underline;
         }
+
+        /* Pagination Styles */
+        .pagination-container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .pagination-info {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .pagination a,
+        .pagination .current-page,
+        .pagination .disabled {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .pagination a {
+            background-color: #f8f9fa;
+            color: #007bff;
+            border: 1px solid #dee2e6;
+        }
+
+        .pagination a:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination .current-page {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+            font-weight: bold;
+        }
+
+        .pagination .disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .pagination .prev-next {
+            font-weight: bold;
+        }
+
+        .pagination .dots {
+            padding: 8px 12px;
+            color: #6c757d;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-container h1 {
+            margin: 0;
+        }
+
+        .categories-btn {
+            background-color: #17a2b8;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .categories-btn:hover {
+            background-color: #138496;
+        }
+
+        .categories-btn::before {
+            content: "📁";
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
-    <h1>Wszystkie artykuły</h1>
+    <div class="header-container">
+        <h1>Wszystkie artykuły</h1>
+        <a href="{% url 'category-list' %}" class="categories-btn">Przeglądaj kategorie</a>
+    </div>
 
     <!-- Formularz wyszukiwania -->
     <div class="search-form">
@@ -112,47 +284,84 @@
                 type="text"
                 id="search-input"
                 name="q"
-                placeholder="Szukaj artykułów po tytule..."
+                placeholder="Szukaj artykułów po tytule lub treści..."
                 value="{{ search_query }}"
             >
             <button type="submit">🔍 Szukaj</button>
         </form>
     </div>
 
-    <div>
-        Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
-        ({{ page_obj.paginator.count }} artykułów)
+    <!-- Filtrowanie sortowania -->
+    <div class="sort-filter">
+        <form method="GET" action="" style="display: flex; align-items: center; gap: 10px; margin: 0;">
+            {% if search_query %}
+                <input type="hidden" name="q" value="{{ search_query }}">
+            {% endif %}
+            <label for="sort-select">Sortuj:</label>
+            <select name="sort" id="sort-select" onchange="this.form.submit()">
+                <option value="newest" {% if sort_order == 'newest' %}selected{% endif %}>Od najnowszych</option>
+                <option value="oldest" {% if sort_order == 'oldest' %}selected{% endif %}>Od najstarszych</option>
+            </select>
+            <noscript>
+                <button type="submit">Zastosuj</button>
+            </noscript>
+        </form>
     </div>
 
-    {% if page_obj.has_previous %}
-        <a href="?q={{ search_query }}&page={{ page_obj.previous_page_number }}">« Poprzednia</a>
-        {% else %}
-        <span class="disabled">« Poprzednia</span>
-    {% endif %}
 
-    {% if page_obj.has_next %}
-        <a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}">Następna »</a>
-    {% endif %}
-
-    {% for num in page_obj.paginator.page.range  %}
-        {% if page_obj.number == num %}
-            <strong>{{ num }}</strong>
-        {% else %}
-            <a href="?q={{ search_query }}&page={{ num }}">{{ num }}</a>
-        {% endif %}
-    {% endfor %}
-
-    {% if page_obj.has_next %}
-        <a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}">Następna »</a>
+    <!-- Informacja o wyświetlanych artykułach -->
+    {% if not search_query %}
+        <div class="search-info" style="background-color: #e7f3ff;">
+            Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+            ({{ page_obj.paginator.count }} artykułów, wyświetlam po 5 na stronę)
+        </div>
     {% endif %}
 
     <!-- Informacja o wyszukiwaniu -->
     {% if search_query %}
         <div class="search-info">
             Wyniki wyszukiwania dla: <strong>"{{ search_query }}"</strong>
-            (znaleziono: {{ articles.count }} artykułów)
+            (znaleziono: {{ page_obj.paginator.count }} artykułów)
             <a href="{% url 'article-list' %}" class="clear-search">✖ Wyczyść wyszukiwanie</a>
         </div>
+    {% endif %}
+
+    <!-- Paginacja (górna) -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination-container">
+        <div class="pagination-info">
+            Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+        </div>
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ search_query }}&sort={{ sort_order }}&page=1" class="prev-next">⟨⟨ Pierwsza</a>
+                <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.previous_page_number }}" class="prev-next">⟨ Poprzednia</a>
+            {% else %}
+                <span class="disabled prev-next">⟨⟨ Pierwsza</span>
+                <span class="disabled prev-next">⟨ Poprzednia</span>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="current-page">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                    <span class="dots">...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.next_page_number }}" class="prev-next">Następna ⟩</a>
+                <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.paginator.num_pages }}" class="prev-next">Ostatnia ⟩⟩</a>
+            {% else %}
+                <span class="disabled prev-next">Następna ⟩</span>
+                <span class="disabled prev-next">Ostatnia ⟩⟩</span>
+            {% endif %}
+        </div>
+    </div>
     {% endif %}
 
     {% if articles %}
@@ -173,9 +382,54 @@
                         Opublikowano: {{ article.pub_date|date:"d.m.Y H:i" }}
                         ({{ article.pub_date|timesince }} temu)
                     </div>
+                    {% if article.tags.all %}
+                        <div class="tags-container">
+                            {% for tag in article.tags.all %}
+                                <span class="tag">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Paginacja (dolna) -->
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+            </div>
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page=1" class="prev-next">⟨⟨ Pierwsza</a>
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.previous_page_number }}" class="prev-next">⟨ Poprzednia</a>
+                {% else %}
+                    <span class="disabled prev-next">⟨⟨ Pierwsza</span>
+                    <span class="disabled prev-next">⟨ Poprzednia</span>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="current-page">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                    {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                        <span class="dots">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.next_page_number }}" class="prev-next">Następna ⟩</a>
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.paginator.num_pages }}" class="prev-next">Ostatnia ⟩⟩</a>
+                {% else %}
+                    <span class="disabled prev-next">Następna ⟩</span>
+                    <span class="disabled prev-next">Ostatnia ⟩⟩</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     {% else %}
         {% if search_query %}
             <div class="search-info">
