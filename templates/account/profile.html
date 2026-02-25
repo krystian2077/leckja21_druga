@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Mój profil{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">👤 Mój profil</h3>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Informacje o koncie</h5>
+                                <ul class="list-unstyled">
+                                    <li><strong>Email:</strong> {{ user.email }}</li>
+                                    <li><strong>Imię:</strong> {{ user.first_name|default:"Nie podano" }}</li>
+                                    <li><strong>Nazwisko:</strong> {{ user.last_name|default:"Nie podano" }}</li>
+                                    <li><strong>Konto utworzone:</strong> {{ user.date_joined|date:"d.m.Y H:i" }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Status weryfikacji</h5>
+                                {% if user.emailaddress_set.exists %}
+                                    {% for email in user.emailaddress_set.all %}
+                                        <div class="alert alert-info">
+                                            <strong>{{ email.email }}</strong>
+                                            {% if email.verified %}
+                                                <span class="badge bg-success">✓ Zweryfikowany</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">⚠ Nie zweryfikowany</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="alert alert-warning">
+                                        Brak adresów email w profilu
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'account_change_password' %}"
+                                   class="btn btn-warning btn-block mb-2 w-100">
+                                    🔐 Zmień hasło
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'account_email' %}" class="btn btn-info btn-block mb-2 w-100">
+                                    ✉️ Zarządzaj adresami email
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <a href="/" class="btn btn-secondary w-100">
+                                    ← Powróć do strony głównej
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            Musisz być zalogowany, aby zobaczyć swój profil.
+                        </div>
+                        <a href="{% url 'account_login' %}" class="btn btn-primary w-100">
+                            Zaloguj się
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

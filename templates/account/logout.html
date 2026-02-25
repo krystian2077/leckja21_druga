@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Potwierdź wylogowanie{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">⚠️ Potwierdź wylogowanie</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center mb-4">Czy na pewno chcesz się wylogować?</p>
+
+                    <form method="post" class="text-center">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger me-2">Wyloguj się</button>
+                        <a href="/" class="btn btn-secondary">Anuluj</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

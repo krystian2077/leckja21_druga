@@ -1,18 +1,16 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Artykułów</title>
-    <link rel="stylesheet" href="{% static 'article/css/style.css' %}">
+
+{% block title %}Lista Artykułów{% endblock %}
+
+{% block extra_css %}
     <style>
         .article-item {
             background-color: white;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .article-item h2 {
@@ -73,7 +71,7 @@
             padding: 15px 20px;
             margin-bottom: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -117,7 +115,7 @@
             padding: 20px;
             margin-bottom: 30px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .search-form input[type="text"] {
@@ -172,7 +170,7 @@
             padding: 20px;
             margin: 20px 0;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -269,8 +267,9 @@
             font-size: 1.2em;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <div class="header-container">
         <h1>Wszystkie artykuły</h1>
         <a href="{% url 'category-list' %}" class="categories-btn">Przeglądaj kategorie</a>
@@ -281,11 +280,11 @@
         <form method="GET" action="">
             <label for="search-input" style="display: none;">Wyszukaj artykuły:</label>
             <input
-                type="text"
-                id="search-input"
-                name="q"
-                placeholder="Szukaj artykułów po tytule lub treści..."
-                value="{{ search_query }}"
+                    type="text"
+                    id="search-input"
+                    name="q"
+                    placeholder="Szukaj artykułów po tytule lub treści..."
+                    value="{{ search_query }}"
             >
             <button type="submit">🔍 Szukaj</button>
         </form>
@@ -328,40 +327,43 @@
 
     <!-- Paginacja (górna) -->
     {% if page_obj.paginator.num_pages > 1 %}
-    <div class="pagination-container">
-        <div class="pagination-info">
-            Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
-        </div>
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?q={{ search_query }}&sort={{ sort_order }}&page=1" class="prev-next">⟨⟨ Pierwsza</a>
-                <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.previous_page_number }}" class="prev-next">⟨ Poprzednia</a>
-            {% else %}
-                <span class="disabled prev-next">⟨⟨ Pierwsza</span>
-                <span class="disabled prev-next">⟨ Poprzednia</span>
-            {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <span class="current-page">{{ num }}</span>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
-                {% elif num == 1 or num == page_obj.paginator.num_pages %}
-                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
-                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
-                    <span class="dots">...</span>
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+            </div>
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page=1" class="prev-next">⟨⟨ Pierwsza</a>
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.previous_page_number }}"
+                       class="prev-next">⟨ Poprzednia</a>
+                {% else %}
+                    <span class="disabled prev-next">⟨⟨ Pierwsza</span>
+                    <span class="disabled prev-next">⟨ Poprzednia</span>
                 {% endif %}
-            {% endfor %}
 
-            {% if page_obj.has_next %}
-                <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.next_page_number }}" class="prev-next">Następna ⟩</a>
-                <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.paginator.num_pages }}" class="prev-next">Ostatnia ⟩⟩</a>
-            {% else %}
-                <span class="disabled prev-next">Następna ⟩</span>
-                <span class="disabled prev-next">Ostatnia ⟩⟩</span>
-            {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="current-page">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                    {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                        <span class="dots">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.next_page_number }}"
+                       class="prev-next">Następna ⟩</a>
+                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.paginator.num_pages }}"
+                       class="prev-next">Ostatnia ⟩⟩</a>
+                {% else %}
+                    <span class="disabled prev-next">Następna ⟩</span>
+                    <span class="disabled prev-next">Ostatnia ⟩⟩</span>
+                {% endif %}
+            </div>
         </div>
-    </div>
     {% endif %}
 
     {% if articles %}
@@ -395,40 +397,43 @@
 
         <!-- Paginacja (dolna) -->
         {% if page_obj.paginator.num_pages > 1 %}
-        <div class="pagination-container">
-            <div class="pagination-info">
-                Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
-            </div>
-            <div class="pagination">
-                {% if page_obj.has_previous %}
-                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page=1" class="prev-next">⟨⟨ Pierwsza</a>
-                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.previous_page_number }}" class="prev-next">⟨ Poprzednia</a>
-                {% else %}
-                    <span class="disabled prev-next">⟨⟨ Pierwsza</span>
-                    <span class="disabled prev-next">⟨ Poprzednia</span>
-                {% endif %}
-
-                {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                        <span class="current-page">{{ num }}</span>
-                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
-                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
-                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
-                    {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
-                        <span class="dots">...</span>
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+                </div>
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page=1" class="prev-next">⟨⟨ Pierwsza</a>
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.previous_page_number }}"
+                           class="prev-next">⟨ Poprzednia</a>
+                    {% else %}
+                        <span class="disabled prev-next">⟨⟨ Pierwsza</span>
+                        <span class="disabled prev-next">⟨ Poprzednia</span>
                     {% endif %}
-                {% endfor %}
 
-                {% if page_obj.has_next %}
-                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.next_page_number }}" class="prev-next">Następna ⟩</a>
-                    <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.paginator.num_pages }}" class="prev-next">Ostatnia ⟩⟩</a>
-                {% else %}
-                    <span class="disabled prev-next">Następna ⟩</span>
-                    <span class="disabled prev-next">Ostatnia ⟩⟩</span>
-                {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current-page">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                        {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                            <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ num }}">{{ num }}</a>
+                        {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                            <span class="dots">...</span>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.next_page_number }}"
+                           class="prev-next">Następna ⟩</a>
+                        <a href="?q={{ search_query }}&sort={{ sort_order }}&page={{ page_obj.paginator.num_pages }}"
+                           class="prev-next">Ostatnia ⟩⟩</a>
+                    {% else %}
+                        <span class="disabled prev-next">Następna ⟩</span>
+                        <span class="disabled prev-next">Ostatnia ⟩⟩</span>
+                    {% endif %}
+                </div>
             </div>
-        </div>
         {% endif %}
     {% else %}
         {% if search_query %}
@@ -440,6 +445,4 @@
             <p>Brak artykułów do wyświetlenia.</p>
         {% endif %}
     {% endif %}
-</body>
-</html>
-
+{% endblock %}

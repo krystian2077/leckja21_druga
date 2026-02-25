@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Zweryfikuj adres email{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">📧 Zweryfikuj adres email</h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        Na Twój adres email została wysłana wiadomość zawierająca link do potwierdzenia.
+                        Kliknij na link, aby aktywować swoje konto.
+                    </p>
+
+                    <p class="text-muted">
+                        <strong>Uwaga:</strong> Jeśli nie widzisz wiadomości, sprawdź folder SPAM.
+                    </p>
+
+                    <hr>
+
+                    <p class="text-center">
+                        <a href="/" class="btn btn-primary">Powróć do strony głównej</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

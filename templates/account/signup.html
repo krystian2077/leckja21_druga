@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load account %}
+
+{% block title %}Zarejestruj się{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">✏️ Zarejestruj się</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="mb-3">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Błąd:</strong>
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label">Hasło</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger">{{ form.password1.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password2" class="form-label">Potwierdź hasło</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger">{{ form.password2.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-success w-100">Zarejestruj się</button>
+                    </form>
+
+                    <hr>
+
+                    <p class="text-center">
+                        Masz już konto? <a href="{% url 'account_login' %}" class="text-decoration-none">Zaloguj się
+                        tutaj</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        #id_email, #id_password1, #id_password2 {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        #id_email:focus, #id_password1:focus, #id_password2:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+    </style>
+{% endblock %}
+

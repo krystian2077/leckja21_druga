@@ -1,11 +1,9 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ category.name }} - Szczegóły kategorii</title>
-    <link rel="stylesheet" href="{% static 'article/css/style.css' %}">
+
+{% block title %}{{ category.name }} - Szczegóły kategorii{% endblock %}
+
+{% block extra_css %}
     <style>
         .category-header {
             background-color: #007bff;
@@ -19,7 +17,7 @@
             background-color: white;
             padding: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .article-item {
@@ -69,8 +67,9 @@
             color: white;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <a href="{% url 'category-list' %}" class="back-link">← Powrót do listy kategorii</a>
 
     <div class="category-header">
@@ -97,6 +96,4 @@
             </div>
         {% endif %}
     </div>
-</body>
-</html>
-
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load account %}
+
+{% block title %}Zaloguj się{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">🔐 Zaloguj się</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="mb-3">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_login" class="form-label">Email lub nazwa użytkownika</label>
+                            <input type="text" name="login" id="id_login" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Hasło</label>
+                            <input type="password" name="password" id="id_password" class="form-control" required>
+                        </div>
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary w-100">Zaloguj się</button>
+                    </form>
+
+                    <hr>
+
+                    <p class="text-center">
+                        Nie masz konta? <a href="{% url 'account_signup' %}" class="text-decoration-none">Zarejestruj
+                        się tutaj</a>
+                    </p>
+                    <p class="text-center">
+                        <a href="{% url 'account_reset_password' %}" class="text-decoration-none">Zapomniałeś hasła?</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
